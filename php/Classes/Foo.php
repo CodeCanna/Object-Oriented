@@ -13,5 +13,52 @@
 		public $authorEmail;
 		public $authorHash;
 		public $authorUsername;
+
+		/*
+		 * Constructor method.
+		 */
+		public function __construct() {
+
+		}
+
+		/*
+		 * Getter for Author ID.
+		 */
+		public function getAuthorId() {
+
+		}
+
+		/*
+		 * Setter for Author Id.
+		 */
+		public function setAuthorId() {
+
+		}
+
+		/*
+		 * Getter for Avatar URL.
+		 */
+		public function getAvatarUrl() {
+
+		}
+
+		/*
+		 * Setter for Avatar URL.
+		 */
+		public function setAvatarUrl() {
+
+		}
+
+		/*
+		 * Get Activation Token.
+		 */
+		public function getActToken() {
+
+		}
+
+		public function setActToken() {
+
+		}
 	}
+
 ?>
