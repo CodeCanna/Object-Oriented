@@ -56,8 +56,38 @@
 
 		}
 
+		/*
+		 * Setter for Activation Token.
+		 */
 		public function setActToken() {
 
+		}
+
+		/*
+		 * Getter for Author Email.
+		 */
+		public function getAuthorEmail() {
+
+		}
+
+		public function setAuthorEmail() {
+
+		}
+
+		public function getAuthorHash() {
+
+		}
+
+		public function setAuthorHash() {
+
+		}
+
+		public function getAuthorUsername() {
+
+		}
+
+		public function setAuthorUsername() {
+			
 		}
 	}
 
