@@ -2,7 +2,7 @@
 	namespace mwaid1\ObjectOriented;
 
 	require_once("autoload.php");
-	require_once(dirname(__DIR__) . "/Classes/autoload.php");
+	require_once(dirname(__DIR__) . "/vendor/autoload.php");
 
 	use function PHPSTORM_META\type;
 	use Ramsey\Uuid\Uuid;
