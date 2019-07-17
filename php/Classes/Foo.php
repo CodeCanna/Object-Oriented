@@ -70,25 +70,39 @@
 
 		}
 
+		/*
+		 * Setter for Author Email.
+		 */
 		public function setAuthorEmail() {
 
 		}
 
+		/*
+		 * Getter for Author Hash.
+		 */
 		public function getAuthorHash() {
 
 		}
 
+		/*
+		 * Setter for Author Hash.
+		 */
 		public function setAuthorHash() {
 
 		}
 
+		/*
+		 * Getter for Username.
+		 */
 		public function getAuthorUsername() {
 
 		}
 
+		/*
+		 * Setter for Author Username.
+		 */
 		public function setAuthorUsername() {
-			
+
 		}
 	}
-
 ?>
