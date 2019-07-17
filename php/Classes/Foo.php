@@ -3,35 +3,59 @@
 
 	require_once("autoload.php");
 	require_once(dirname(__DIR__) . "/Classes/autoload.php");
+
+	use function PHPSTORM_META\type;
+	use Ramsey\Uuid\Uuid;
 	/*
 	* Defines an author
 	*/
 	class Author {
-		public $authorId;
-		public $authorAvatarUrl;
-		public $authorActivationToken;
-		public $authorEmail;
-		public $authorHash;
-		public $authorUsername;
+		private $authorId;
+		private $authorAvatarUrl;
+		private $authorActivationToken;
+		private $authorEmail;
+		private $authorHash;
+		private $authorUsername;
 
 		/*
 		 * Constructor method.
 		 */
-		public function __construct() {
-
+		/**
+		 * Author constructor.
+		 * @param $authId
+		 * @param $authAvUrl
+		 * @param $authActToken
+		 * @param $authEmail
+		 * @param $authHash
+		 * @param $authUname
+		 */
+		public function __construct($authId, $authAvUrl, $authActToken, $authEmail, $authHash, $authUname) {
+			$this->setAuthorId($authId);
+			$this->setAvatarUrl($authAvUrl);
+			$this->setActToken($authActToken);
+			$this->setAuthorEmail($authEmail);
+			$this->setAuthorHash($authHash);
+			$this->setAuthorUsername($authUname);
 		}
 
 		/*
 		 * Getter for Author ID.
 		 */
-		public function getAuthorId() {
-
+		public function getAuthorId() : Uuid {
+			return ($this->authorId);
 		}
 
 		/*
 		 * Setter for Author Id.
 		 */
-		public function setAuthorId() {
+		public function setAuthorId($authId): void {
+			try {
+				//Send data to SQL?
+				$authUuid = self::validateUuid($authId);
+
+			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+				echo "Error: ", $exception->getMessage(), "\n";
+			}
 
 		}
 
@@ -39,7 +63,7 @@
 		 * Getter for Avatar URL.
 		 */
 		public function getAvatarUrl() {
-
+			return ($this->authorAvatarUrl);
 		}
 
 		/*
@@ -53,7 +77,7 @@
 		 * Get Activation Token.
 		 */
 		public function getActToken() {
-
+			return ($this->authorActivationToken);
 		}
 
 		/*
@@ -67,7 +91,7 @@
 		 * Getter for Author Email.
 		 */
 		public function getAuthorEmail() {
-
+			return ($this->authorEmail);
 		}
 
 		/*
@@ -81,7 +105,7 @@
 		 * Getter for Author Hash.
 		 */
 		public function getAuthorHash() {
-
+			return ($this->authorHash);
 		}
 
 		/*
@@ -95,7 +119,7 @@
 		 * Getter for Username.
 		 */
 		public function getAuthorUsername() {
-
+			return ($this->authorUsername);
 		}
 
 		/*
