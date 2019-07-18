@@ -10,11 +10,37 @@
 	* Defines an author
 	*/
 	class Author {
+		use ValidateDate;
+		use ValidateUuid;
+
+		/*
+		 *Author ID variable.
+		 */
 		private $authorId;
+
+		/*
+		 *
+		 */
 		private $authorAvatarUrl;
+
+		/*
+		 *
+		 */
 		private $authorActivationToken;
+
+		/*
+		 *
+		 */
 		private $authorEmail;
+
+		/*
+		 *
+		 */
 		private $authorHash;
+
+		/*
+		 *
+		 */
 		private $authorUsername;
 
 		/*
@@ -69,8 +95,13 @@
 		/*
 		 * Setter for Avatar URL.
 		 */
-		public function setAvatarUrl() {
-
+		public function setAvatarUrl($authUrl) {
+			$authUrl = trim($authUrl);
+			$authUrl = filter_var($authUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);		//Check for valid URL.
+			if(strlen($authUrl) > 255) {
+				throw(new \Exception("ERROR: Input too large!"));
+			}
+			$this->authorAvatarUrl = $authUrl;
 		}
 
 		/*
@@ -84,7 +115,7 @@
 		 * Setter for Activation Token.
 		 */
 		public function setActToken() {
-
+			
 		}
 
 		/*
