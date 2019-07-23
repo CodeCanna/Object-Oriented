@@ -4,7 +4,9 @@
 	require_once("autoload.php");
 	require_once(dirname(__DIR__) . "/vendor/autoload.php");
 
+	use mysql_xdevapi\Exception;
 	use function PHPSTORM_META\type;
+
 	use Ramsey\Uuid\Uuid;
 	/*
 	* Defines an author
@@ -54,6 +56,7 @@
 		 * @param $authEmail
 		 * @param $authHash
 		 * @param $authUname
+		 * @throws \Exception
 		 */
 		public function __construct($authId, $authAvUrl, $authActToken, $authEmail, $authHash, $authUname) {
 			$this->setAuthorId($authId);
@@ -76,13 +79,12 @@
 		 */
 		public function setAuthorId($authId): void {
 			try {
-				//Send data to SQL?
-				$authUuid = self::validateUuid($authId);
-
+				$this->authorId = self::validateUuid($authId);
 			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-				echo "Error: ", $exception->getMessage(), "\n";
+				$exceptionType = get_class($exception);
+				throw(new $exceptionType($exception->getMessage(), 0, $exception));
 			}
-
+			//$this->authorId = $authId;
 		}
 
 		/*
@@ -114,8 +116,8 @@
 		/*
 		 * Setter for Activation Token.
 		 */
-		public function setActToken() {
-			
+		public function setActToken($authToken) : void {
+			$this->authorActivationToken = $authToken;
 		}
 
 		/*
@@ -128,8 +130,11 @@
 		/*
 		 * Setter for Author Email.
 		 */
-		public function setAuthorEmail() {
-
+		public function setAuthorEmail($authEmail) : void {
+			if (!filter_var($authEmail, FILTER_VALIDATE_EMAIL)) {
+				throw(new Exception("Invalid Email"));
+			}
+			$this->authorEmail = $authEmail;
 		}
 
 		/*
@@ -142,8 +147,11 @@
 		/*
 		 * Setter for Author Hash.
 		 */
-		public function setAuthorHash() {
-
+		public function setAuthorHash($authHash) : void {
+			if (is_null($authHash)) {
+				throw(new Exception("Password Invalid!"));
+			}
+			$this->authorHash = $authHash;
 		}
 
 		/*
@@ -156,8 +164,11 @@
 		/*
 		 * Setter for Author Username.
 		 */
-		public function setAuthorUsername() {
-
+		public function setAuthorUsername($authUname) : void {
+			if (!is_string($authUname)) {
+				throw(new Exception("Error: Invalid Username!"));
+			}
+			$this->authorUsername = $authUname;
 		}
 	}
 ?>
