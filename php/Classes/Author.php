@@ -64,6 +64,7 @@
 		 * @param $authHash
 		 * @param $authUname
 		 * @throws \Exception
+		 * @Documentation https://php.net/manual/en/language.oop5.decon.php
 		 */
 		public function __construct($authId, $authAvUrl, $authActToken, $authEmail, $authHash, $authUname) {
 			$this->setAuthorId($authId);
@@ -76,6 +77,7 @@
 
 		/*
 		 * Getter for Author ID.
+		 * @return Uuid value for Author ID
 		 */
 		public function getAuthorId() : Uuid {
 			return ($this->authorId);
@@ -83,10 +85,13 @@
 
 		/*
 		 * Setter for Author Id.
+		 * @param Uuid|string $authId
+		 * @throws \RangeException
+		 * @throws \TypeError if $authorId isn't a Uuid or String
 		 */
-		public function setAuthorId($authId): void {
+		public function setAuthorId($authorId): void {
 			try {
-				$this->authorId = self::validateUuid($authId);
+				$this->authorId = self::validateUuid($authorId);
 			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 				$exceptionType = get_class($exception);
 				throw(new $exceptionType($exception->getMessage(), 0, $exception));
@@ -96,6 +101,8 @@
 
 		/*
 		 * Getter for Avatar URL.
+		 *
+		 * @return $authorAvatarUrl
 		 */
 		public function getAvatarUrl() {
 			return ($this->authorAvatarUrl);
@@ -103,34 +110,50 @@
 
 		/*
 		 * Setter for Avatar URL.
+		 * @param $authorAvatarUrl
+		 * @throws \InvalidArgumentException \RangeException \TypeError
+		 * @returns void
 		 */
-		public function setAvatarUrl($authUrl) {
-			$authUrl = trim($authUrl);
-			$authUrl = filter_var($authUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);		//Check for valid URL.
-			if(strlen($authUrl) > 255) {
-				throw(new \Exception("ERROR: Input too large!"));
+		public function setAvatarUrl($authorAvatarUrl) {
+			$authorAvatarUrl = trim($authorAvatarUrl);
+			$authorAvatarUrl = filter_var($authorAvatarUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);		//Check for valid URL.
+			try {
+				$this->authorAvatarUrl = $authorAvatarUrl;
+			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+				$exceptionType = get_class($exception);
+				throw(new $exceptionType($exception->getMessage(), 0, $exception));
 			}
-			$this->authorAvatarUrl = $authUrl;
+
 		}
 
 		/*
 		 * Get Activation Token.
+		 * @return string
 		 */
-		public function getActToken() {
+		public function getActToken() : string {
 			return ($this->authorActivationToken);
 		}
 
 		/*
 		 * Setter for Activation Token.
+		 * @param $setActivationToken
+		 * @throws \RangeException \Exception \TypeError
+		 * @return void
 		 */
 		public function setActToken($authToken) : void {
-			$this->authorActivationToken = $authToken;
+			try {
+				$this->authorActivationToken = $authToken;
+			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+				$exceptionType = get_class($exception);
+				throw (new $exceptionType($exception->getMessage(), 0, $exception));
+			}
 		}
 
 		/*
 		 * Getter for Author Email.
+		 * @return string
 		 */
-		public function getAuthorEmail() {
+		public function getAuthorEmail() : string {
 			return ($this->authorEmail);
 		}
 
@@ -138,44 +161,55 @@
 		 * Setter for Author Email.
 		 */
 		public function setAuthorEmail($authEmail) : void {
-			if (!filter_var($authEmail, FILTER_VALIDATE_EMAIL)) {
-				throw(new Exception("Invalid Email"));
+			try {
+				$this->authorEmail = $authEmail;
+			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+				$exceptionType = get_class($exception);
+				throw(new $exceptionType($exception->getMessage(), 0, $exception));
 			}
-			$this->authorEmail = $authEmail;
+
 		}
 
 		/*
 		 * Getter for Author Hash.
+		 * @return string
 		 */
-		public function getAuthorHash() {
+		public function getAuthorHash() : string {
 			return ($this->authorHash);
 		}
 
 		/*
 		 * Setter for Author Hash.
+		 * 
 		 */
 		public function setAuthorHash($authHash) : void {
-			if (is_null($authHash)) {
-				throw(new Exception("Password Invalid!"));
+			try {
+				$this->authorHash = $authHash;
+			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+				$exceptionType = get_class($exception);
+				throw(new $exceptionType($exception->getMessage(), 0, $exception));
 			}
-			$this->authorHash = $authHash;
 		}
 
 		/*
 		 * Getter for Username.
+		 * @return string
 		 */
-		public function getAuthorUsername() {
+		public function getAuthorUsername() : string {
 			return ($this->authorUsername);
 		}
 
 		/*
 		 * Setter for Author Username.
+		 * @param $authorUname
 		 */
 		public function setAuthorUsername($authUname) : void {
-			if (!is_string($authUname)) {
-				throw(new Exception("Error: Invalid Username!"));
+			try {
+				$this->authorUsername = $authUname;
+			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+				$exceptionType = get_class($exception);
+				throw(new $exceptionType($exception->getMessage(), 0, $exception));
 			}
-			$this->authorUsername = $authUname;
 		}
 	}
 ?>
