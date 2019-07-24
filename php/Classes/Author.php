@@ -16,37 +16,44 @@
 		use ValidateUuid;
 
 		/*
-		 *Author ID variable.
+		 * Author ID variable.
+		 * @var Uuid $authorId
 		 */
 		private $authorId;
 
 		/*
-		 *
+		 * Author Avatar URL variable.
+		 * @var URL $authorAvatarUrl
 		 */
 		private $authorAvatarUrl;
 
 		/*
-		 *
+		 * Author Activation Token variable
+		 * @var Token $authorActivationToken
 		 */
 		private $authorActivationToken;
 
 		/*
-		 *
+		 * Holds E-Mail of user/author
+		 * @var string $authorEmail
 		 */
 		private $authorEmail;
 
 		/*
+		 * Author password hash
+		 * @var hash $authorHash
 		 *
 		 */
 		private $authorHash;
 
 		/*
-		 *
+		 * Holds usernames of all users and authors
+		 * @var string $authorUsername
 		 */
 		private $authorUsername;
 
 		/*
-		 * Constructor method.
+		 * Constructor method.  Used to construct the Author object, and set all variables.
 		 */
 		/**
 		 * Author constructor.
