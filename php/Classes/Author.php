@@ -1,5 +1,5 @@
 <?php
-	namespace mwaid1\ObjectOriented;
+	namespace mwaid1\ObjectOriented;  // My namespace
 
 	require_once("autoload.php");
 	require_once(dirname(__DIR__) . "/vendor/autoload.php");
@@ -105,7 +105,7 @@
 				$exceptionType = get_class($exception);
 				throw(new $exceptionType($exception->getMessage(), 0, $exception));
 			}
-			//$this->authorId = $authId;
+			$this->authororId = $authorId;
 		}
 
 		/**
@@ -129,12 +129,15 @@
 		public function setAvatarUrl($authorAvatarUrl) {
 			$authorAvatarUrl = trim($authorAvatarUrl);
 			$authorAvatarUrl = filter_var($authorAvatarUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);		//Check for valid URL.
-			try {
-				$this->authorAvatarUrl = $authorAvatarUrl;
-			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-				$exceptionType = get_class($exception);
-				throw(new $exceptionType($exception->getMessage(), 0, $exception));
+
+			if (empty($authorAvatarUrl) === true) {
+				throw(new \InvalidArgumentException("Invalid URL, please enter a valid URL to continue."));
 			}
+
+			if (strlen($authorAvatarUrl) > 255 or $authorAvatarUrl < 0) {
+				throw(new \RangeException("Too many or too little characters."));
+			}
+			$this->authorAvatarUrl = $authorAvatarUrl;
 		}
 		/**
 		 * Get Activation Token.
@@ -153,13 +156,21 @@
 		 * @throws \Exception if any other exception throws.
 		 * @return void
 		 */
-		public function setActToken($activationToken) : void {
-			try {
-				$this->authorActivationToken = $activationToken;
-			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-				$exceptionType = get_class($exception);
-				throw (new $exceptionType($exception->getMessage(), 0, $exception));
+		public function setActToken(?string $activationToken) : void {
+			if($activationToken === null) {
+				$this->authorActivationToken = null;
+				return;
 			}
+
+			$activationToken = strtolower(trim($activationToken));
+			if (ctype_xdigit($activationToken) === false) {
+				throw(new \RangeException("User activation not valid."));
+			}
+
+			if (strlen($activationToken) !== 32) {
+				throw(new \RangeException("Activation token must be 32 characters."));
+			}
+			$this->authorActivationToken = $activationToken;
 		}
 
 		/**
@@ -180,13 +191,15 @@
 		 * @return void
 		 */
 		public function setAuthorEmail($authorEmail) : void {
-			try {
-				$this->authorEmail = $authorEmail;
-			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-				$exceptionType = get_class($exception);
-				throw(new $exceptionType($exception->getMessage(), 0, $exception));
+			$validEmail = trim($authorEmail, FILTER_VALIDATE_EMAIL);
+			if($validEmail === false) {
+				throw(new \InvalidArgumentException("Email address invalid, please enter a valid email to continue."));
 			}
 
+			if(strlen($authorEmail) > 255) {
+				throw(new \RangeException("Email address too long."));
+			}
+			$this->authorEmail = $authorEmail;
 		}
 
 		/**
@@ -206,12 +219,20 @@
 		 * @throws \Exception if any other exception is thrown.
 		 */
 		public function setAuthorHash($authorHash) : void {
-			try {
-				$this->authorHash = $authHash;
-			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-				$exceptionType = get_class($exception);
-				throw(new $exceptionType($exception->getMessage(), 0, $exception));
+			$authorHash = trim($authorHash);
+			if(empty($authorHash)) {
+				throw(new \InvalidArgumentException("Hash is empty or not secure."));
 			}
+
+			$profileHashInfo = password_get_info($authorHash);
+			if($profileHashInfo["algoName"] !== "argon2i") {
+				throw(new \InvalidArgumentException("Not a valid hash."));
+			}
+
+			if(strlen($authorHash) !== 97) {
+				throw(new \RangeException("Hash must be 97 characters."));
+			}
+			$this->authorHash = $authorHash;
 		}
 
 		/**
@@ -232,12 +253,21 @@
 		 * @return void
 		 */
 		public function setAuthorUsername($authorUsername) : void {
-			try {
-				$this->authorUsername = $authorUsername;
-			} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-				$exceptionType = get_class($exception);
-				throw(new $exceptionType($exception->getMessage(), 0, $exception));
+			if(empty($authorUsername)) {
+				throw(new \InvalidArgumentException("Username is empty."));
 			}
+
+			if(strlen($authorUsername) >= 50 && strlen($authorUsername) <= 1) {
+				throw(new \RangeException("Password not long enough must be no more than 20 and no less than eight."));
+			}
+
+			if(empty($authorUsername)) {
+				throw(new \InvalidArgumentException("Username is empty please enter a username!"));
+			}
+			$this->authorUsername = $authorUsername;
 		}
 	}
+
+
+
 ?>
