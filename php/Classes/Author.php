@@ -56,26 +56,26 @@
 		 */
 		/**
 		 * Author constructor.
-		 * @param string | Uuid $authId this variable holds the Uuid for the Author/User's ID.
-		 * @param string $authAvUrl this string contains the Author/User avatar URL.
-		 * @param string $authActToken string contains an activation token for Author.
-		 * @param string $authEmail string holds the Author email address.
-		 * @param string $authHash string contains the hash value of the Author's password.
-		 * @param string $authUname string contains Author's Username.
+		 * @param string | Uuid $authorId this variable holds the Uuid for the Author/User's ID.
+		 * @param string $authorAvatarUrl this string contains the Author/User avatar URL.
+		 * @param string $authorActivationToken string contains an activation token for Author.
+		 * @param string $authorEmail string holds the Author email address.
+		 * @param string $authorHash string contains the hash value of the Author's password.
+		 * @param string $authorUsername string contains Author's Username.
 		 * @throws \InvalidArgumentException if wrong data type is supplied.
 		 * @throws \TypeError if the data is of the wrong type.
 		 * @throws \RangeException if a variable goes of specified range.
 		 * @throws \Exception if any other exception takes place.
 		 * @Documentation https://php.net/manual/en/language.oop5.decon.php
 		 */
-		public function __construct($authId, $authAvUrl, $authActToken, $authEmail, $authHash, $authUname) {
+		public function __construct($authorId, $authorAvatarUrl, $authorActivationToken, $authorEmail, $authorHash, $authorUsername) {
 			try {
-				$this->setAuthorId($authId);
-				$this->setAvatarUrl($authAvUrl);
-				$this->setActToken($authActToken);
-				$this->setAuthorEmail($authEmail);
-				$this->setAuthorHash($authHash);
-				$this->setAuthorUsername($authUname);
+				$this->setAuthorId($authorId);
+				$this->setAvatarUrl($authorAvatarUrl);
+				$this->setActToken($authorActivationToken);
+				$this->setAuthorEmail($authorEmail);
+				$this->setAuthorHash($authorHash);
+				$this->setAuthorUsername($authorUsername);
 			} catch(\InvalidArgumentException | \RangeException |\TypeError | \Exception $exception) {
 				$exceptionType = get_class($exception);
 				throw(new $exceptionType($exception->getMessage(), 0, $exception));
@@ -149,28 +149,28 @@
 
 		/**
 		 * Setter for Activation Token.
-		 * @param $activationToken argument to take in the activation token for Author.
+		 * @param $authorActivationToken argument to take in the activation token for Author.
 		 * @throws \RangeException if data is out of range specified.
 		 * @throws \InvalidArgumentException if arguments provided are invalid.
 		 * @throws \TypeError if data provided is of wrong data type.
 		 * @throws \Exception if any other exception throws.
 		 * @return void
 		 */
-		public function setActToken(?string $activationToken) : void {
-			if($activationToken === null) {
+		public function setActToken($authorActivationToken) : void {
+			if($authorActivationToken === null) {
 				$this->authorActivationToken = null;
 				return;
 			}
 
-			$activationToken = strtolower(trim($activationToken));
-			if (ctype_xdigit($activationToken) === false) {
+			$authorActivationToken = strtolower(trim($authorActivationToken));
+			if (ctype_xdigit($authorActivationToken) === false) {
 				throw(new \RangeException("User activation not valid."));
 			}
 
-			if (strlen($activationToken) !== 32) {
+			if (strlen($authorActivationToken) !== 32) {
 				throw(new \RangeException("Activation token must be 32 characters."));
 			}
-			$this->authorActivationToken = $activationToken;
+			$this->authorActivationToken = $authorActivationToken;
 		}
 
 		/**
@@ -266,8 +266,145 @@
 			}
 			$this->authorUsername = $authorUsername;
 		}
+
+		// Insert(), Update(), and Delete()
+
+		/**
+		 * Inserts data into the table.
+		 *
+		 * @param \PDO $pdo
+		 */
+		public function insert(\PDO $pdo): void {
+			// Create mySQL query
+			$query = "INSERT INTO author(authorId, authorAvatarUrl, authorActivationToken, authorEmail, authorHash, authorUsername) VALUES(:authorId, :authorAvatarUrl, :authorActivationToken, :authorEmail, :authorHash, :authorUsername)";
+
+			// Prepare mySQL query
+			$statement = $pdo->prepare($query);
+
+			// Set values
+			$values = ["authorId" => $this->authorId, "authorAvatarUrl" => $this->authorAvatarUrl, "authorActivationToken" => $this->authorActivationToken, "authorEmail" => $this->authorEmail, "authorUsername" => $this->authorUsername];
+
+			// Execute statement
+			$statement->execute($values);
+		}
+
+		public function update(\PDO $pdo): void {
+			// Create mySQL query
+			$query = "UPDATE author SET authorId = :authorId, authorAvatarUrl = :authorAvatarUrl, authorActivationToken = :authorActivationToken, authorEmail = :authorEmail, authorHash = :authorHash, authorUsername = :authorUsername";
+
+			// Prepare mySQL query
+			$statement = $pdo->prepare($query);
+
+			// Set values
+			$values = ["authorId" => $this->authorId, "authorAvatarUrl" => $this->authorAvatarUrl, "authorActivationToken" => $this->authorActivationToken, "authorEmail" => $this->authorEmail, "authorUsername" => $this->authorUsername];
+
+			// Excecute statement
+			$statement->execute($values);
+		}
+
+		/**
+		 * Deletes data from the table.
+		 *
+		 * @param \PDO $pdo
+		 */
+		public function delete(\PDO $pdo) {
+			// Create mySQL query
+			$query = "DELETE FROM author WHERE authorId = :authorId";
+
+			// Prepare statement
+			$statement = $pdo->prepare($query);
+
+			// Set values
+			$values = ["authorId" => $this->authorId];
+
+			// Execute statement
+			$statement->execute($values);
+		}
+
+		// getFooByBar methods
+
+		/**
+		 * Gets an author by it's id.
+		 *
+		 * @param $authorId
+		 * @return Author
+		 */
+		public function getAuthorById(\PDO $pdo, $authorId): ?Author {
+			// Sanitize authorId
+			try {
+				$authorId = self::validateUuid($authorId);
+			} catch(\Exception $exception) {
+				$exceptionType = get_class($exception);
+				throw(new $exceptionType($exception->getMessage(), 0, $exception));
+			}
+
+			// Create mySQL query
+			$query = "SELECT authorId, authorAvatarUrl, authorActivationToken, authorEmail, authorHash, authorUsername FROM author WHERE authorId = :authorId";
+
+			// Prepare mySQL query
+			$statement = $pdo->prepare($query);
+
+			// Set values
+			$values = ["authorId" => $this->authorId->getBytes()];
+
+			// Execute statement
+			$statement->execute($values);
+
+			try {
+				$author = null;
+				$statement->setFetchMode(\PDO::FETCH_ASSOC);
+				$row = $statement->fetch();
+				if($row !== false) {
+					$author = new Author($row["authorId"], $row["authorAvatarUrl"], $row["authorActivationToken"], $row["authorEmail"], $row["authorHash"], $row["authorUsername"]);
+				}
+			} catch(\Exception $exception) {
+				$exceptionType = get_class($exception);
+				throw(new $exceptionType($exception->getMessage(), 0, $exception));
+			}
+			return $author;
+		}
+
+		/**
+		 * Gets all authors
+		 *
+		 * @param \PDO $pdo
+		 * @return \SplFixedArray
+		 */
+		public function getAllAuthors(\PDO $pdo): \SplFixedArray {
+			// Create mySQL query
+			$query = "SELECT authorId, authorAvatarUrl, authorActivationToken, authorEmail, authorHash, authorUsername FROM author";
+
+			// Prepare mySQL query
+			$statement = $pdo->prepare($query);
+
+			// Execute statement
+			$statement->execute();
+
+			// Create array to store authors
+			$authors = new \SplFixedArray($statement->rowCount());
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			while(($row = $statement->fetch()) !== false) {
+				try {
+					$author = new Author($row["authorId"], $row["authorAvatarUrl"], $row["authorActivationToken"], $row["authorEmail"], $row["authorHash"], $row["authorUsername"]);
+					$authors[$authors->key()] = $author;
+					$authors->next();
+				} catch(\Exception $exception) {
+					$exceptionType = get_class($exception);
+					throw(new $exceptionType($exception->getMessage(), 0, $exception));
+				}
+			}
+			return $authors;
+		}
+		/**
+		 * Returns a JSON array of the object variables.
+		 *
+		 * @return array
+		 */
+		public function jsonSerialize(): array {
+			$fields = get_object_vars($this);
+			$fields["authorId"] = $this->authorId->toString();
+
+			return $fields;
+		}
 	}
-
-
-
 ?>
