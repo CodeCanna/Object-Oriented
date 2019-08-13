@@ -273,6 +273,7 @@
 		 * Inserts data into the table.
 		 *
 		 * @param \PDO $pdo
+		 * @return void
 		 */
 		public function insert(\PDO $pdo): void {
 			// Create mySQL query
@@ -306,6 +307,7 @@
 		 * Deletes data from the table.
 		 *
 		 * @param \PDO $pdo
+		 * @return void
 		 */
 		public function delete(\PDO $pdo) {
 			// Create mySQL query
