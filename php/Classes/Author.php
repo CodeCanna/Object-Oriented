@@ -272,8 +272,8 @@
 		/**
 		 * Inserts data into the table.
 		 *
-		 * @param \PDO $pdo
-		 * @return void
+		 * @param \PDO $pdo holds the PDO object for accessing the database.
+		 * @return void this function returns nothing.
 		 */
 		public function insert(\PDO $pdo): void {
 			// Create mySQL query
@@ -289,6 +289,12 @@
 			$statement->execute($values);
 		}
 
+		/**
+		 * Updates the species table.
+		 *
+		 * @param \PDO $pdo holds the PDO object used for accessing the database.
+		 * @returns void
+		 */
 		public function update(\PDO $pdo): void {
 			// Create mySQL query
 			$query = "UPDATE author SET authorId = :authorId, authorAvatarUrl = :authorAvatarUrl, authorActivationToken = :authorActivationToken, authorEmail = :authorEmail, authorHash = :authorHash, authorUsername = :authorUsername";
@@ -306,8 +312,8 @@
 		/**
 		 * Deletes data from the table.
 		 *
-		 * @param \PDO $pdo
-		 * @return void
+		 * @param \PDO $pdo this holds the PDO object used to accessing the database.
+		 * @return void this method returns nothing.
 		 */
 		public function delete(\PDO $pdo) {
 			// Create mySQL query
@@ -328,14 +334,16 @@
 		/**
 		 * Gets an author by it's id.
 		 *
-		 * @param $authorId
-		 * @return Author
+		 * @param $authorId is the author's uniqe ID.
+		 * @throws \Exception if validateUuid fails.
+		 * @throws \PDOException if anything goes wrong with the PDO.
+		 * @return Author this method returns an instance of $this.
 		 */
 		public function getAuthorById(\PDO $pdo, $authorId): ?Author {
 			// Sanitize authorId
 			try {
 				$authorId = self::validateUuid($authorId);
-			} catch(\Exception $exception) {
+			} catch(\PDOException | \Exception $exception) {
 				$exceptionType = get_class($exception);
 				throw(new $exceptionType($exception->getMessage(), 0, $exception));
 			}
@@ -369,8 +377,10 @@
 		/**
 		 * Gets all authors
 		 *
-		 * @param \PDO $pdo
-		 * @return \SplFixedArray
+		 * @param \PDO $pdo this holds the PDO object used for accessing the database.
+		 * @throws \PDOException if anything goes wrong with the PDO object.
+		 * @throws \Exception if any other exception occurs.
+		 * @return \SplFixedArray this array will hold all of the data objects grabbed by getAllAuthors()
 		 */
 		public function getAllAuthors(\PDO $pdo): \SplFixedArray {
 			// Create mySQL query
@@ -390,7 +400,7 @@
 					$author = new Author($row["authorId"], $row["authorAvatarUrl"], $row["authorActivationToken"], $row["authorEmail"], $row["authorHash"], $row["authorUsername"]);
 					$authors[$authors->key()] = $author;
 					$authors->next();
-				} catch(\Exception $exception) {
+				} catch(\PDOException | \Exception $exception) {
 					$exceptionType = get_class($exception);
 					throw(new $exceptionType($exception->getMessage(), 0, $exception));
 				}
@@ -400,7 +410,7 @@
 		/**
 		 * Returns a JSON array of the object variables.
 		 *
-		 * @return array
+		 * @return array of json objects representing this classes variable set.
 		 */
 		public function jsonSerialize(): array {
 			$fields = get_object_vars($this);
